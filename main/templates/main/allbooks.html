@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}
+<h1>Book list</h1>
+{% endblock %}
+
+{% block content %}
+    {% if book_list %}
+        {% for a in book_list %}
+            <a href="{% url 'detail_book' a.id %}" class="alert alert-dark form-control text-decoration-none">Title "{{ a.title }}" Author: {{ a.author }}</a>
+        {% endfor %}
+
+    {% else %}
+        <p>There are currently no books</p>
+    {% endif %}
+{% endblock %}

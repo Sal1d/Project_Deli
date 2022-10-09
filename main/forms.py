@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
 from django import forms
+from django.utils.safestring import mark_safe
+
+from main.models import Book
 
 
 class AuthenticationForm(forms.Form):
@@ -14,7 +17,7 @@ class UserRegistrationForm(forms.ModelForm):
     surname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={"autocomplete": "current-password",
-                                                                                   'class': 'form-control'}))
+                                                                             'class': 'form-control'}))
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput(attrs={"autocomplete": "current-password",
                                                                                            'class': 'form-control'}))
 
@@ -27,3 +30,14 @@ class UserRegistrationForm(forms.ModelForm):
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Passwords don\'t match.')
         return cd['password2']
+
+
+class CreateBookForm(forms.ModelForm):
+    title = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    text = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Book
+        fields = ('title', 'text')
+        exclude = ['author']
+

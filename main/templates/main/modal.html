@@ -1,4 +1,4 @@
-<div class="modal fade" id="login" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,11 +6,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{% url 'user_login' %}" method="POST" id="user_login">
-                 <div class="alert alert-danger d-none" role="alert"></div>
                 <div class="modal-body">
                     {{ login }}
                     {% csrf_token %}
                 </div>
+                <div class="alert alert-danger d-none" role="alert"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-warning">Login</button>
@@ -20,15 +20,15 @@
     </div>
 </div>
 
-<div class="modal fade" id="register" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="register" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Registration</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{% url 'register' %}" method="POST" id="user_login">
-                 <div class="alert alert-danger d-none" role="alert"></div>
+            <form action="{% url 'register' %}" method="POST" id="user_reg">
+                <div class="alert alert-danger d-none" role="alert"></div>
                 <div class="modal-body">
                     {{ register }}
                     {% csrf_token %}
@@ -36,6 +36,27 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-warning">Sign-up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="logout" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'logout' %}" method="POST" id="logout">
+                <div class="modal-body">
+                    Are you sure you want to leave?
+                    {% csrf_token %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">No!</button>
+                    <button type="submit" class="btn btn-danger">Yes</button>
                 </div>
             </form>
         </div>

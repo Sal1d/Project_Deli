@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+    <h1>Create book right now</h1>
+{% endblock %}
+
+{% block content %}
+    <form action="{% url 'book_add' %}" method="POST" id="book_add">
+        <div class="container">
+            {{ book_add }}
+            {% csrf_token %}
+        </div>
+            <div class=" text-danger mt-2 d-none">
+                <span>Проверьте поля <b>Title and Text</b></span>
+            </div>
+            <div class="container">
+                <button type="submit" class="btn btn-success mt-2">Create</button>
+            </div>
+
+    </form>
+
+
+{% endblock %}
