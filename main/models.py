@@ -1,21 +1,23 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseUserManager, User
-
+import requests
+from datetime import datetime
 from djangoProject import settings
 
 
 class CustomAccountManager(BaseUserManager):
-    def create_user(self, email, username, first_name, surname, password):
-        user = self.model(email=email, username=username, first_name=first_name, surname=surname, password=password)
+    def create_user(self, email, username, phone, first_name, surname, password):
+        user = self.model(email=email, username=username, phone=phone, first_name=first_name, surname=surname,
+                          password=password)
         user.set_password(password)
         user.is_staff = False
         user.is_superuser = False
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, first_name, surname, password):
-        user = self.create_user(email=email, username=username, first_name=first_name,
+    def create_superuser(self, email, username, phone, first_name, surname, password):
+        user = self.create_user(email=email, username=username, phone=phone, first_name=first_name,
                                 surname=surname, password=password)
         user.is_active = True
         user.is_staff = True
@@ -30,11 +32,12 @@ class CustomAccountManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30, unique=True)
-    email = models.EmailField(max_length=30)
+    email = models.EmailField(max_length=30, unique=True)
+    phone = models.CharField(max_length=12, unique=True, null=True)
     first_name = models.CharField(max_length=30)
     surname = models.CharField(max_length=30)
     is_staff = models.BooleanField(default=False)
-    REQUIRED_FIELDS = ['email', 'first_name', 'surname']
+    REQUIRED_FIELDS = ['email', 'phone', 'first_name', 'surname']
     USERNAME_FIELD = 'username'
 
     object = CustomAccountManager()

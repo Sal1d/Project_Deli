@@ -10,8 +10,8 @@
                     {{ login }}
                     {% csrf_token %}
                 </div>
-                <div class="alert alert-danger d-none" role="alert"></div>
                 <div class="modal-footer">
+                    <div class="text-danger me-auto d-none" role="alert"></div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-warning">Login</button>
                 </div>
@@ -28,12 +28,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{% url 'register' %}" method="POST" id="user_reg">
-                <div class="alert alert-danger d-none" role="alert"></div>
                 <div class="modal-body">
                     {{ register }}
                     {% csrf_token %}
                 </div>
                 <div class="modal-footer">
+                    <div class="text-danger me-auto d-none"></div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-warning">Sign-up</button>
                 </div>

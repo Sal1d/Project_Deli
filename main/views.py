@@ -3,28 +3,42 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views import View
 from django.http import JsonResponse, HttpResponse
-
+import requests
+from datetime import datetime
 from djangoProject.settings import LOGIN_REDIRECT_URL
 from main.forms import AuthenticationForm, UserRegistrationForm, CreateBookForm
 from main.models import Book
 
 
+def get_time():
+    response = requests.get(url='https://yandex.com/time/sync.json?geo=67')
+    data_time = response.json()
+    unix_time = data_time.get('time')//1000
+    time = datetime.utcfromtimestamp(int(unix_time)).strftime('%A, %d.%m.%y %H:%M')
+    return time
+
+
 def home(request):
-    return render(request, 'main/home.html')
+    time = get_time()
+    return render(request, 'main/home.html', {'time': time})
 
 
 def success(request):
-    return render(request, 'main/addbook.html')
+    time = get_time()
+    return render(request, 'main/addbook.html', {'time': time})
+
 
 def all_books(request):
     book_list = Book.objects.all()
     book_list = book_list[::-1]
-    return render(request, 'main/allbooks.html', {'book_list': book_list})
+    time = get_time()
+    return render(request, 'main/allbooks.html', {'book_list': book_list, 'time': time})
 
 
 def detail_book(request, book_id):
     a = Book.objects.get(id=book_id)
-    return render(request, 'main/book.html', {'book': a})
+    time = get_time()
+    return render(request, 'main/book.html', {'book': a, 'time': time})
 
 
 def user_login(request):
@@ -40,32 +54,13 @@ def user_login(request):
                 else:
                     return HttpResponse('YOU BANNED')
             else:
-                return JsonResponse(data={'error': "Неверный логин или пароль"},
+                return JsonResponse(data={'error': "Wrong login or password"},
                                     status=400)
         else:
             return JsonResponse(
-                data={'error': 'Введите логин или пароль'},
-                status=400
+                data={'errors': form.errors},
+                status=400,
             )
-    else:
-        form = AuthenticationForm()
-    return HttpResponse('NO 3')
-
-
-def user_login22(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(username=cd['username'], password=cd['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect('/')
-                else:
-                    return HttpResponse('NO 1')
-            else:
-                return HttpResponse('NO 2')
     else:
         form = AuthenticationForm()
     return HttpResponse('NO 3')
@@ -79,10 +74,11 @@ def register(request):
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
             login(request, new_user)
-            return redirect('/')
-    else:
-        user_form = UserRegistrationForm()
-    return HttpResponse('REG 3')
+            return JsonResponse(data={}, status=201)
+        return JsonResponse(
+            data={'errors': user_form.errors},
+            status=400,
+        )
 
 
 @login_required
@@ -94,6 +90,7 @@ def logout_user(request):
 
 @login_required(login_url=LOGIN_REDIRECT_URL)
 def book_add(request):
+    time = get_time()
     if request.method == 'POST':
         form = CreateBookForm(request.POST or None)
         if form.is_valid():
@@ -106,4 +103,4 @@ def book_add(request):
                 data={'error': 'Проверьте поля Title and Text'},
                 status=400
             )
-    return render(request, 'main/createnewbook.html')
+    return render(request, 'main/createnewbook.html', {'time': time})
